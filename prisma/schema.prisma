@@ -1,0 +1,25 @@
+// Prisma schema — single source of truth for the DB shape + generated client.
+// Docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  // Connection URL comes from prisma7.config.ts (datasource.url = env DATABASE_URL).
+}
+
+// Post — mirrors the frontend `Post` type in react19-topics/src/lib/api.ts
+// so the same React Query code works once BASE_URL points here.
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  body      String
+  userId    Int      @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("posts")
+}

@@ -1,0 +1,29 @@
+# Dependencies
+node_modules
+
+# Build output
+/dist
+*.tsbuildinfo
+
+# Environment variables (keep secrets out of version control)
+.env
+.env.local
+
+# Prisma generated client (regenerated via postinstall)
+/src/generated/prisma
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor / OS
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+
+# Prisma CLI injected agent skills (not part of the app)
+.agents/
+.windsurf/
+.claude/
+skills-lock.json
