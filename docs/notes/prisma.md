@@ -31,6 +31,26 @@ Code: `src/topics/prisma/queries.example.ts`, `src/posts/posts.service.ts`,
 - `prisma migrate deploy` (prod: apply pending only).
 - `prisma db seed` (seed script). `prisma studio` (GUI). `prisma generate` (client).
 
+## Relations (schema models: User/Profile/Post/Comment/Category)
+- **1-1**: FK + `@unique` on the owning side (Profile.userId). **1-many**: FK on the
+  many side (Post.userId) + back-relation array (User.posts). **many-many**: relation
+  arrays both sides; Prisma manages the implicit join table (Post↔Category).
+- Read: `include` (full relation) / `select` (specific fields) / `_count`.
+- Filter by relation: `where: { author: {...}, categories: { some: {...} } }`.
+- Write graphs: nested `create` / `connect` / `disconnect` / `set` in one call.
+- `onDelete: Cascade` for dependent children. Index FKs (`@@index([userId])`).
+- See `src/topics/prisma/relations.example.ts`.
+
+## Prisma 7 specifics
+- Requires a **driver adapter**: `new PrismaClient({ adapter: new PrismaPg({
+  connectionString }) })` — plain `new PrismaClient()` throws. (See PrismaService.)
+- New `prisma-client` generator → `src/generated/prisma`; config in
+  `prisma7.config.ts`; needs `dotenv`.
+
+## Raw SQL practice
+- `src/topics/sql/practice.sql` — DDL/DML, constraints, joins, indexes, CTEs,
+  window fns, transactions, EXPLAIN. Run via psql/pgAdmin or `prisma db execute`.
+
 ## Gotchas
 - Regenerate client after schema change (`postinstall` runs it here).
 - **N+1**: fetching relations in a loop → use `include`/`select` or batch.

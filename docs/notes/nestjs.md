@@ -56,6 +56,41 @@ Code: `src/topics/nestjs/` (wired `learning/` + `*.example.ts` references)
   `@EventPattern` (events).
 - **Swagger**: `@nestjs/swagger` auto docs from decorators.
 
+## Testing (wired: `src/posts/posts.service.spec.ts`, `test/posts.e2e-spec.ts`)
+- **Unit**: `Test.createTestingModule` + override providers with mocks (mock
+  PrismaService) → fast, no DB. Test one class in isolation.
+- **E2E**: boot the app (`createNestApplication`) + drive over HTTP with supertest;
+  needs a real DB (use a disposable test DB). `npm test` (unit) / `npm run test:e2e`.
+- **Quick Q**: unit vs e2e? → isolate a class with mocks vs boot the whole app + DB.
+
+## Serialization (wired: `/features/user`)
+- `class-transformer` + `ClassSerializerInterceptor`: `@Exclude()` hides fields
+  (password hashes), `@Expose({name})` renames. Handler must return a class
+  instance. Keeps secrets out of responses.
+
+## Health checks (wired: `/health`)
+- `@nestjs/terminus` + `@HealthCheck()`; custom indicator pings Postgres. Liveness/
+  readiness for orchestrators.
+
+## API versioning (wired: `/v1|/v2/features/version`)
+- `enableVersioning({ type: URI })`; `@Version('1')` per route; `VERSION_NEUTRAL`
+  keeps unversioned routes working.
+
+## File uploads (wired: `/features/upload`)
+- `FileInterceptor('file')` (Multer) + `@UploadedFile()`; `Express.Multer.File`.
+
+## GraphQL (wired: `/graphql`)
+- Code-first: `@ObjectType/@Field` models, `@Resolver` + `@Query/@Mutation/@Args`;
+  `autoSchemaFile` generates SDL. Client asks for exactly the fields it needs from
+  one endpoint. `@ResolveField` lazily resolves relations (over/under-fetch fix).
+- **Quick Q**: REST vs GraphQL? → many endpoints/fixed shapes vs one endpoint/
+  client-selected fields + aggregation.
+
+## Logging & global binding (ref: `logging-global-binding.example.ts`)
+- Built-in `Logger`; production → structured JSON (pino) + request-id middleware.
+- Global cross-cutting: `useGlobalPipes` (no DI) OR `APP_PIPE/APP_GUARD/
+  APP_INTERCEPTOR/APP_FILTER` providers (DI-enabled).
+
 ## Quick Q
 - Lifecycle order? → middleware, guard, interceptor, pipe, handler, interceptor,
   filter.

@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType, VERSION_NEUTRAL } from '@nestjs/common';
 import { AppModule } from './app.module.js';
 
 async function bootstrap() {
@@ -7,6 +7,11 @@ async function bootstrap() {
 
   // CORS so the Vite React app (http://localhost:5173) can call this API.
   app.enableCors({ origin: ['http://localhost:5173'], credentials: true });
+
+  // API VERSIONING via URI (/v1/...). Unversioned routes stay reachable
+  // (VERSION_NEUTRAL default), so /posts etc. are unaffected while
+  // /features/version exposes /v1 and /v2.
+  app.enableVersioning({ type: VersioningType.URI, defaultVersion: VERSION_NEUTRAL });
 
   // Global validation: enforces DTO rules, strips unknown props, coerces types.
   app.useGlobalPipes(

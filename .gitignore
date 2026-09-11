@@ -9,8 +9,8 @@ node_modules
 .env
 .env.local
 
-# Prisma generated client (regenerated via postinstall)
-/src/generated/prisma
+# Generated code (Prisma client via postinstall; GraphQL schema at boot)
+/src/generated
 
 # Logs
 *.log

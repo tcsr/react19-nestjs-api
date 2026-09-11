@@ -48,6 +48,28 @@ Code: `src/topics/node/*.ts` (run: `npx tsx src/topics/node/<file>.ts`)
   `cause` to wrap. Last-resort `uncaughtException`/`unhandledRejection` → log +
   exit; don't keep running in unknown state.
 
+## HTTP module
+- Built-in `http.createServer((req,res)=>...)`. req=Readable, res=Writable; must
+  `res.end()`. Manual method+url routing → what Express/Nest automate. Frameworks
+  add routing, DI, validation, middleware on top of this.
+
+## Crypto (node:crypto)
+- **Hash** (SHA-256) for integrity — NOT passwords. **Passwords**: slow KDF
+  (scrypt/bcrypt/argon2) + per-user salt. **HMAC** keyed signatures (webhooks).
+  **AES-256-GCM** authenticated symmetric encryption (random IV + auth tag).
+  **randomBytes/randomUUID** for secure tokens/ids. Compare secrets with
+  `timingSafeEqual` (avoid timing attacks).
+- **Quick Q**: hash a password with SHA-256? → No — use scrypt/bcrypt/argon2 + salt.
+
+## fs & path
+- Prefer `fs/promises` + async/await (sync blocks the loop). Stream large files.
+  `path.join`/`extname`/`basename` for cross-platform paths (never concat with '/').
+  `mkdir(dir,{recursive:true})` = mkdir -p.
+
+## child_process
+- `spawn` (stream, long/large output) · `exec` (buffered string) · `fork` (Node
+  child + IPC). Shell out / run CLIs / scale across cores.
+
 ## Concurrency / scaling
 - Async I/O already parallel (libuv). CPU-bound work → **worker_threads** (shared
   memory) or **cluster/child_process** (separate memory, per-core). Long jobs →

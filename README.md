@@ -35,13 +35,20 @@ Structure: `src/prisma` (global client), `src/posts` (controller/service/DTOs),
 ## Learning materials
 - **Runnable topics** — `src/topics/`
   - `node/` — event loop, modules, async, EventEmitter, streams, errors, worker
-    threads (run: `npx tsx src/topics/node/01-event-loop.ts`).
+    threads, **HTTP server, crypto, fs/path, child_process** (run:
+    `npx tsx src/topics/node/01-event-loop.ts`).
   - `nestjs/learning/` — **wired** module demoing the full request lifecycle
     (middleware → guard → interceptor → pipe → handler → filter) on `/learning/*`.
+  - `nestjs/features/` — **wired**: serialization (`/features/user`), file upload
+    (`/features/upload`), health (`/health`), API versioning (`/v1|/v2`).
+  - `nestjs/graphql/` — **wired** code-first GraphQL at `/graphql`.
   - `nestjs/*.example.ts` — commented references: auth (JWT/RBAC), caching,
     queues/scheduling, websockets/microservices, DI/scopes/dynamic modules,
-    swagger/config/lifecycle.
-  - `prisma/queries.example.ts` — Prisma query patterns.
+    swagger/config/lifecycle, logging/global-binding.
+  - `prisma/` — query + **relations** patterns; `sql/practice.sql` — runnable SQL
+    (DDL/DML, joins, indexes, CTEs, windows, transactions, EXPLAIN).
+- **Tests** — `src/posts/posts.service.spec.ts` (unit, mocked Prisma),
+  `test/posts.e2e-spec.ts` (e2e). `npm test` / `npm run test:e2e`.
 - **Study notes** — [`docs/notes/`](docs/README.md) (Node, NestJS, Prisma).
 - **Architect cheat-sheets** — [`docs/architecture/`](docs/README.md) (PostgreSQL
   deep, backend system design).
