@@ -4,6 +4,7 @@ import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 import { PostsModule } from './posts/posts.module.js';
+import { LearningModule } from './topics/nestjs/learning/learning.module.js';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { PostsModule } from './posts/posts.module.js';
     ConfigModule.forRoot({ isGlobal: true }),
     PrismaModule,
     PostsModule,
+    LearningModule,
   ],
   controllers: [AppController],
   providers: [AppService],
