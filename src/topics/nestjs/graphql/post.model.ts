@@ -8,6 +8,7 @@
  */
 
 import { ObjectType, Field, Int, InputType } from '@nestjs/graphql';
+import { IsInt, IsString, Min, MinLength } from 'class-validator';
 
 @ObjectType()
 export class PostModel {
@@ -26,12 +27,20 @@ export class PostModel {
 
 @InputType()
 export class CreatePostInput {
+  // class-validator decorators so the global ValidationPipe (whitelist) accepts
+  // these fields for the GraphQL mutation, not just @Field for the schema.
   @Field()
+  @IsString()
+  @MinLength(1)
   title!: string;
 
   @Field()
+  @IsString()
+  @MinLength(1)
   body!: string;
 
   @Field(() => Int)
+  @IsInt()
+  @Min(1)
   userId!: number;
 }

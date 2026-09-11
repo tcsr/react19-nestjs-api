@@ -22,10 +22,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
   private readonly logger = new Logger('Exceptions');
 
   catch(exception: unknown, host: ArgumentsHost) {
-    const ctx = host.switchToHttp();
-    const res = ctx.getResponse<Response>();
-    const req = ctx.getRequest<Request & { id?: string }>();
-
     const status =
       exception instanceof HttpException
         ? exception.getStatus()
@@ -35,6 +31,15 @@ export class AllExceptionsFilter implements ExceptionFilter {
       exception instanceof HttpException
         ? exception.message
         : 'Internal server error'; // don't leak internals
+
+    // Only handle HTTP requests here. GraphQL/WebSocket/microservice contexts have
+    // no Express req/res — let their own layers format the error (GraphQL builds its
+    // errors array). Re-throw so we don't crash on a missing request object.
+    const res = host.switchToHttp().getResponse<Response>();
+    const req = host.switchToHttp().getRequest<Request & { id?: string }>();
+    if (!req || typeof res?.status !== 'function') {
+      throw exception;
+    }
 
     // Log full detail server-side (5xx gets the stack).
     if (status >= 500) {

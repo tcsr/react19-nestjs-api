@@ -25,9 +25,14 @@ export class LoggingInterceptor implements NestInterceptor {
     const req = context.switchToHttp().getRequest<Request & { id?: string }>();
     const start = Date.now();
     return next.handle().pipe(
-      tap(() =>
-        this.logger.log(`[${req.id}] ${req.method} ${req.originalUrl} ${Date.now() - start}ms`),
-      ),
+      tap(() => {
+        // GraphQL/WS contexts have no Express req — log a generic line instead.
+        if (!req?.method) {
+          this.logger.log(`${context.getType()} handled ${Date.now() - start}ms`);
+        } else {
+          this.logger.log(`[${req.id}] ${req.method} ${req.originalUrl} ${Date.now() - start}ms`);
+        }
+      }),
     );
   }
 }
