@@ -9,12 +9,14 @@ study notes, and architect cheat-sheets.
 | [notes/node.md](./notes/node.md) | `src/topics/node/*.ts` (run with tsx) |
 | [notes/nestjs.md](./notes/nestjs.md) | `src/topics/nestjs/` + wired `learning/` module |
 | [notes/prisma.md](./notes/prisma.md) | `src/topics/prisma/`, `src/posts/`, `prisma/schema.prisma` |
+| [notes/ddd.md](./notes/ddd.md) | `src/topics/ddd/order/` (hexagonal Order slice) |
 
 ## Architect cheat-sheets
 | Sheet | Covers |
 |---|---|
 | [architecture/postgresql.md](./architecture/postgresql.md) | ACID, isolation, indexes, joins, EXPLAIN, normalization, CTEs/windows, pooling, partitioning |
 | [architecture/backend-system-design.md](./architecture/backend-system-design.md) | REST design, error contracts, layering, caching, N+1, rate limiting, CQRS, migrations, observability |
+| [architecture/ddd.md](./architecture/ddd.md) | DDD: bounded contexts, aggregates, value objects, domain events, hexagonal, context mapping, DDD→microservices |
 
 ## Running the topic code
 ```bash

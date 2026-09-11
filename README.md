@@ -47,6 +47,10 @@ Structure: `src/prisma` (global client), `src/posts` (controller/service/DTOs),
     swagger/config/lifecycle, logging/global-binding.
   - `prisma/` — query + **relations** patterns; `sql/practice.sql` — runnable SQL
     (DDL/DML, joins, indexes, CTEs, windows, transactions, EXPLAIN).
+  - `ddd/order/` — **wired DDD** slice in hexagonal layers: Order aggregate, Money
+    value object, repository port + in-memory adapter, domain events. Live at
+    `/orders` (POST places an order → emits OrderPlaced). One bounded context =
+    one future microservice.
 - **Tests** — `src/posts/posts.service.spec.ts` (unit, mocked Prisma),
   `test/posts.e2e-spec.ts` (e2e). `npm test` / `npm run test:e2e`.
 - **Study notes** — [`docs/notes/`](docs/README.md) (Node, NestJS, Prisma).

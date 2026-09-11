@@ -7,6 +7,7 @@ import { PostsModule } from './posts/posts.module.js';
 import { LearningModule } from './topics/nestjs/learning/learning.module.js';
 import { FeaturesModule } from './topics/nestjs/features/features.module.js';
 import { GraphqlDemoModule } from './topics/nestjs/graphql/graphql-demo.module.js';
+import { OrderModule } from './topics/ddd/order/order.module.js';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { GraphqlDemoModule } from './topics/nestjs/graphql/graphql-demo.module.j
     LearningModule,
     FeaturesModule,
     GraphqlDemoModule,
+    OrderModule,
   ],
   controllers: [AppController],
   providers: [AppService],
