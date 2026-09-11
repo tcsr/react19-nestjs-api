@@ -50,6 +50,11 @@ export class PostsController {
 
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
-    return this.posts.remove(id);
+    return this.posts.remove(id); // soft delete
+  }
+
+  @Post(':id/restore')
+  restore(@Param('id', ParseIntPipe) id: number) {
+    return this.posts.restore(id);
   }
 }

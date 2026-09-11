@@ -3,6 +3,12 @@
 Runnable, self-contained `.sql` files. Each creates its own `demo_*` tables and
 drops them at the end, so run in any order against a scratch database.
 
+> ⚠️ **These demo files DROP their `demo_*` tables on purpose** — they are isolated
+> scratch tables. **In production you NEVER drop/truncate a table with real data.**
+> See `15-safe-migrations.sql` and `docs/architecture/production-database-practices.md`
+> for the safe patterns (additive + reversible migrations, expand–contract, soft
+> delete, `CREATE INDEX CONCURRENTLY`, backups).
+
 ## Run
 ```bash
 # psql:
@@ -30,6 +36,7 @@ npx prisma db execute --file src/topics/sql/01-joins.sql --schema prisma/schema.
 | 12 | functions & triggers — PL/pgSQL, audit, updated_at |
 | 13 | indexes & EXPLAIN — b-tree/composite/partial/covering, reading plans |
 | 14 | pagination — offset vs keyset/cursor |
+| 15 | **safe/production migrations** — additive, batched backfill, CONCURRENTLY, soft delete, expand–contract, what NOT to do |
 
 Notes: `docs/notes/sql.md`. Deep concepts: `docs/architecture/postgresql.md`.
 

@@ -18,6 +18,7 @@ study notes, and architect cheat-sheets.
 | [architecture/postgresql.md](./architecture/postgresql.md) | ACID, isolation, indexes, joins, EXPLAIN, normalization, CTEs/windows, pooling, partitioning |
 | [architecture/backend-system-design.md](./architecture/backend-system-design.md) | REST design, error contracts, layering, caching, N+1, rate limiting, CQRS, migrations, observability |
 | [architecture/ddd.md](./architecture/ddd.md) | DDD: bounded contexts, aggregates, value objects, domain events, hexagonal, context mapping, DDD→microservices |
+| [architecture/production-database-practices.md](./architecture/production-database-practices.md) | Never drop/truncate live tables; safe+reversible migrations, expand–contract, soft delete, backups/PITR, least-privilege, zero-downtime |
 
 ## Running the topic code
 ```bash

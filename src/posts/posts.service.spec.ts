@@ -18,7 +18,7 @@ import { PrismaService } from '../prisma/prisma.service.js';
 const prismaMock = {
   post: {
     findMany: vi.fn(),
-    findUnique: vi.fn(),
+    findFirst: vi.fn(),
     create: vi.fn(),
     update: vi.fn(),
     delete: vi.fn(),
@@ -46,6 +46,7 @@ describe('PostsService', () => {
     const result = await service.findAll(2, 5);
 
     expect(prismaMock.post.findMany).toHaveBeenCalledWith({
+      where: { deletedAt: null }, // live rows only (soft delete)
       skip: 5, // (2-1)*5
       take: 5,
       orderBy: { id: 'asc' },
@@ -53,9 +54,19 @@ describe('PostsService', () => {
     expect(result).toEqual([{ id: 1 }]);
   });
 
-  it('findOne throws NotFoundException when missing', async () => {
-    prismaMock.post.findUnique.mockResolvedValue(null);
+  it('findOne throws NotFoundException when missing (or soft-deleted)', async () => {
+    prismaMock.post.findFirst.mockResolvedValue(null);
     await expect(service.findOne(99)).rejects.toBeInstanceOf(NotFoundException);
+  });
+
+  it('remove soft-deletes (update deletedAt), not a hard delete', async () => {
+    prismaMock.post.findFirst.mockResolvedValue({ id: 1 });
+    await service.remove(1);
+    expect(prismaMock.post.update).toHaveBeenCalledWith({
+      where: { id: 1 },
+      data: { deletedAt: expect.any(Date) },
+    });
+    expect(prismaMock.post.delete).not.toHaveBeenCalled();
   });
 
   it('create delegates to prisma.post.create', async () => {

@@ -27,10 +27,13 @@ works once its BASE_URL points here.
 | GET | `/posts/:id` | one |
 | POST | `/posts` | create (validated) |
 | PATCH | `/posts/:id` | update |
-| DELETE | `/posts/:id` | delete |
+| DELETE | `/posts/:id` | **soft** delete (sets deleted_at) |
+| POST | `/posts/:id/restore` | undo soft delete |
 
 Structure: `src/prisma` (global client), `src/posts` (controller/service/DTOs),
 `main.ts` (CORS + global ValidationPipe), `prisma/schema.prisma` (Post model).
+Uses **soft delete** (`deleted_at`) — a production pattern: rows are hidden, never
+physically removed. See `docs/architecture/production-database-practices.md`.
 
 ## Learning materials
 - **Runnable topics** — `src/topics/`
