@@ -12,8 +12,9 @@ async function bootstrap() {
   // Graceful shutdown: SIGTERM/SIGINT -> onModuleDestroy hooks (Prisma disconnect).
   app.enableShutdownHooks();
 
-  // CORS so the Vite React app (http://localhost:5173) can call this API.
-  app.enableCors({ origin: ['http://localhost:5173'], credentials: true });
+  // CORS for the Vite React app. Allow any localhost port in dev (Vite may pick
+  // 5174+ if 5173 is taken); tighten to specific origins in production.
+  app.enableCors({ origin: /^http:\/\/localhost:\d+$/, credentials: true });
 
   // API VERSIONING via URI (/v1/...). Unversioned routes stay reachable
   // (VERSION_NEUTRAL default), so /posts etc. are unaffected while
