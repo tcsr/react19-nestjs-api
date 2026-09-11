@@ -1,9 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe, VersioningType, VERSION_NEUTRAL } from '@nestjs/common';
+import helmet from 'helmet';
 import { AppModule } from './app.module.js';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Security headers (CSP, HSTS, etc.). Loosen CSP so the GraphQL sandbox loads.
+  app.use(helmet({ contentSecurityPolicy: false }));
+
+  // Graceful shutdown: SIGTERM/SIGINT -> onModuleDestroy hooks (Prisma disconnect).
+  app.enableShutdownHooks();
 
   // CORS so the Vite React app (http://localhost:5173) can call this API.
   app.enableCors({ origin: ['http://localhost:5173'], credentials: true });

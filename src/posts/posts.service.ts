@@ -7,8 +7,7 @@
 
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
-import { CreatePostDto } from './dto/create-post.dto.js';
-import { UpdatePostDto } from './dto/update-post.dto.js';
+import type { CreatePost, UpdatePost } from '../contracts/post.contract.js';
 
 @Injectable()
 export class PostsService {
@@ -33,11 +32,11 @@ export class PostsService {
     return post;
   }
 
-  create(dto: CreatePostDto) {
+  create(dto: CreatePost) {
     return this.prisma.post.create({ data: dto });
   }
 
-  async update(id: number, dto: UpdatePostDto) {
+  async update(id: number, dto: UpdatePost) {
     await this.findOne(id); // 404 if missing
     return this.prisma.post.update({ where: { id }, data: dto });
   }

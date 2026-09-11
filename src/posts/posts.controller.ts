@@ -2,7 +2,8 @@
  * PostsController — HTTP layer. Maps routes to service methods.
  * Route prefix: /posts. Query params _page/_limit match the frontend api.ts so
  * pointing React Query's BASE_URL here needs no frontend change.
- * ParseIntPipe coerces + validates numeric params.
+ * Validation via the shared Zod CONTRACT (src/contracts/post.contract.ts) —
+ * one schema for validation + types, mirrored on the frontend.
  */
 
 import {
@@ -18,8 +19,13 @@ import {
   DefaultValuePipe,
 } from '@nestjs/common';
 import { PostsService } from './posts.service.js';
-import { CreatePostDto } from './dto/create-post.dto.js';
-import { UpdatePostDto } from './dto/update-post.dto.js';
+import { ZodValidationPipe } from '../common/zod-validation.pipe.js';
+import {
+  createPostSchema,
+  updatePostSchema,
+  type CreatePost,
+  type UpdatePost,
+} from '../contracts/post.contract.js';
 
 @Controller('posts')
 export class PostsController {
@@ -39,12 +45,15 @@ export class PostsController {
   }
 
   @Post()
-  create(@Body() dto: CreatePostDto) {
+  create(@Body(new ZodValidationPipe(createPostSchema)) dto: CreatePost) {
     return this.posts.create(dto);
   }
 
   @Patch(':id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdatePostDto) {
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body(new ZodValidationPipe(updatePostSchema)) dto: UpdatePost,
+  ) {
     return this.posts.update(id, dto);
   }
 

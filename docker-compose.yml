@@ -1,0 +1,27 @@
+# Local infra for development. The Nest app runs on the host (npm run start:dev);
+# this compose file provides Postgres (and later Redis/Kafka for microservices).
+# Usage:
+#   docker compose up -d db          # start Postgres in the background
+#   npm run prisma:migrate           # apply migrations
+#   npm run prisma:seed              # seed data
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: react19_pg
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app_pw
+      POSTGRES_DB: react19
+    ports:
+      - '5433:5432' # host 5433 -> container 5432 (avoids clashing with a local PG on 5432)
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U app -d react19']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata:
