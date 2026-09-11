@@ -10,6 +10,7 @@ study notes, and architect cheat-sheets.
 | [notes/nestjs.md](./notes/nestjs.md) | `src/topics/nestjs/` + wired `learning/` module |
 | [notes/prisma.md](./notes/prisma.md) | `src/topics/prisma/`, `src/posts/`, `prisma/schema.prisma` |
 | [notes/ddd.md](./notes/ddd.md) | `src/topics/ddd/order/` (hexagonal Order slice) |
+| [notes/sql.md](./notes/sql.md) | `src/topics/sql/*.sql` (14 runnable query files) |
 
 ## Architect cheat-sheets
 | Sheet | Covers |

@@ -45,8 +45,11 @@ Structure: `src/prisma` (global client), `src/posts` (controller/service/DTOs),
   - `nestjs/*.example.ts` — commented references: auth (JWT/RBAC), caching,
     queues/scheduling, websockets/microservices, DI/scopes/dynamic modules,
     swagger/config/lifecycle, logging/global-binding.
-  - `prisma/` — query + **relations** patterns; `sql/practice.sql` — runnable SQL
-    (DDL/DML, joins, indexes, CTEs, windows, transactions, EXPLAIN).
+  - `prisma/` — query + **relations** patterns.
+  - `sql/` — **14 runnable SQL files**: joins (incl self/lateral), subqueries, set
+    ops, aggregates/grouping, window fns, recursive CTEs, upsert/RETURNING,
+    JSONB/arrays, full-text search, transactions/locking, views/matviews,
+    functions/triggers, indexes/EXPLAIN, pagination (see `sql/README.md`).
   - `ddd/order/` — **wired DDD** slice in hexagonal layers: Order aggregate, Money
     value object, repository port + in-memory adapter, domain events. Live at
     `/orders` (POST places an order → emits OrderPlaced). One bounded context =
