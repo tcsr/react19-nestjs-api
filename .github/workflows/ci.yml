@@ -9,7 +9,8 @@ jobs:
   build-test:
     runs-on: ubuntu-latest
 
-    # Throwaway Postgres for the e2e tests.
+    # Throwaway Postgres + Redis for the e2e tests (the app boots CacheModule +
+    # BullMQ which need Redis, and Prisma which needs Postgres).
     services:
       postgres:
         image: postgres:17-alpine
@@ -22,9 +23,18 @@ jobs:
         options: >-
           --health-cmd "pg_isready -U app -d react19_test"
           --health-interval 5s --health-timeout 5s --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s --health-timeout 3s --health-retries 10
 
     env:
       DATABASE_URL: postgresql://app:app_pw@localhost:5432/react19_test?schema=public
+      REDIS_URL: redis://localhost:6379
+      JWT_SECRET: ci-test-secret
 
     steps:
       - uses: actions/checkout@v4
