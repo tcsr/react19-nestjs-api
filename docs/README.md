@@ -11,6 +11,10 @@ study notes, and architect cheat-sheets.
 | [notes/prisma.md](./notes/prisma.md) | `src/topics/prisma/`, `src/posts/`, `prisma/schema.prisma` |
 | [notes/ddd.md](./notes/ddd.md) | `src/topics/ddd/order/` (hexagonal Order slice) |
 | [notes/sql.md](./notes/sql.md) | `src/topics/sql/*.sql` (14 runnable query files) |
+| [notes/caching-redis.md](./notes/caching-redis.md) | `src/cache/`, cache-aside in `src/posts` (Redis) |
+| [notes/queues-bullmq.md](./notes/queues-bullmq.md) | `src/jobs/` (BullMQ producer + worker) |
+| [notes/auth.md](./notes/auth.md) | `src/auth/` (JWT strategy, guards, RBAC) |
+| [notes/observability.md](./notes/observability.md) | `src/observability/` (Prometheus + OpenTelemetry) |
 
 ## Architect cheat-sheets
 | Sheet | Covers |
