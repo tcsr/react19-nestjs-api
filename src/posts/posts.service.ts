@@ -5,13 +5,28 @@
  * during later phases.
  */
 
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import type { Cache } from 'cache-manager';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { NotificationsService } from '../jobs/notifications.service.js';
 import type { CreatePost, UpdatePost } from '../contracts/post.contract.js';
 
 @Injectable()
 export class PostsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Inject(CACHE_MANAGER) private readonly cache: Cache,
+    private readonly notifications: NotificationsService,
+  ) {}
+
+  private key(id: number) {
+    return `post:${id}`;
+  }
+  // Invalidate a post's cache entry on any write (cache-aside invalidation).
+  private async invalidate(id: number) {
+    await this.cache.del(this.key(id));
+  }
 
   // Paginated list — LIVE rows only (soft-deleted rows are hidden, not gone).
   findAll(page = 1, limit = 5) {
@@ -26,19 +41,30 @@ export class PostsService {
   }
 
   async findOne(id: number) {
+    // CACHE-ASIDE: try cache first; on miss, read DB then populate cache.
+    const cached = await this.cache.get(this.key(id));
+    if (cached) return cached;
+
     // Treat soft-deleted rows as not found.
     const post = await this.prisma.post.findFirst({ where: { id, deletedAt: null } });
     if (!post) throw new NotFoundException(`Post ${id} not found`);
+
+    await this.cache.set(this.key(id), post); // default TTL from cache config
     return post;
   }
 
-  create(dto: CreatePost) {
-    return this.prisma.post.create({ data: dto });
+  async create(dto: CreatePost) {
+    const post = await this.prisma.post.create({ data: dto });
+    // Offload follow-up work (notify/index) to the queue — return fast.
+    await this.notifications.postCreated(post.id);
+    return post;
   }
 
   async update(id: number, dto: UpdatePost) {
     await this.findOne(id); // 404 if missing
-    return this.prisma.post.update({ where: { id }, data: dto });
+    const updated = await this.prisma.post.update({ where: { id }, data: dto });
+    await this.invalidate(id); // keep cache consistent with the DB
+    return updated;
   }
 
   // SOFT DELETE: mark the row instead of physically deleting it (data preserved,
@@ -46,12 +72,14 @@ export class PostsService {
   async remove(id: number) {
     await this.findOne(id);
     await this.prisma.post.update({ where: { id }, data: { deletedAt: new Date() } });
+    await this.invalidate(id);
     return { deleted: true };
   }
 
   // Undo a soft delete (impossible with a hard delete).
   async restore(id: number) {
     await this.prisma.post.update({ where: { id }, data: { deletedAt: null } });
+    await this.invalidate(id);
     return { restored: true };
   }
 }

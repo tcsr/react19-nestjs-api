@@ -11,6 +11,8 @@ import { LearningModule } from './topics/nestjs/learning/learning.module.js';
 import { FeaturesModule } from './topics/nestjs/features/features.module.js';
 import { GraphqlDemoModule } from './topics/nestjs/graphql/graphql-demo.module.js';
 import { OrderModule } from './topics/ddd/order/order.module.js';
+import { AppCacheModule } from './cache/cache.config.js';
+import { JobsModule } from './jobs/jobs.module.js';
 import { validateEnv } from './common/env.validation.js';
 import { AllExceptionsFilter } from './common/all-exceptions.filter.js';
 import { LoggingInterceptor } from './common/logging.interceptor.js';
@@ -20,6 +22,8 @@ import { RequestIdMiddleware } from './common/request-id.middleware.js';
   imports: [
     // Loads .env app-wide + validates it at boot (fails fast on misconfig).
     ConfigModule.forRoot({ isGlobal: true, validate: validateEnv }),
+    AppCacheModule,
+    JobsModule,
     // Rate limiting: max 100 requests / 60s per IP (global guard below).
     ThrottlerModule.forRoot([{ ttl: 60_000, limit: 100 }]),
     PrismaModule,

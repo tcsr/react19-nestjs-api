@@ -11,8 +11,15 @@
 import { Test } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { PostsService } from './posts.service.js';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { NotificationsService } from '../jobs/notifications.service.js';
+
+// Minimal cache mock (miss by default) so cache-aside falls through to the DB.
+const cacheMock = { get: vi.fn(), set: vi.fn(), del: vi.fn() };
+// Job producer mock (don't hit a real queue in unit tests).
+const notificationsMock = { postCreated: vi.fn() };
 
 // A hand-rolled mock of the Prisma methods the service uses.
 const prismaMock = {
@@ -35,6 +42,8 @@ describe('PostsService', () => {
         PostsService,
         // Override the real PrismaService with our mock.
         { provide: PrismaService, useValue: prismaMock },
+        { provide: CACHE_MANAGER, useValue: cacheMock },
+        { provide: NotificationsService, useValue: notificationsMock },
       ],
     }).compile();
 
