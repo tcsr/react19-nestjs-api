@@ -1,0 +1,10 @@
+# Prometheus scrape config. The API exposes /metrics; Prometheus pulls it.
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: react19-nestjs-api
+    metrics_path: /metrics
+    static_configs:
+      # host.docker.internal reaches the API running on the host from the container.
+      - targets: ['host.docker.internal:3000']

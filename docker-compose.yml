@@ -36,5 +36,27 @@ services:
       timeout: 3s
       retries: 10
 
+  # Observability: Prometheus scrapes the API's /metrics; Grafana graphs it.
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: react19_prometheus
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: react19_grafana
+    ports:
+      - '3002:3000' # http://localhost:3002 (admin/admin); add Prometheus as a datasource
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: 'true'
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+    depends_on:
+      - prometheus
+
 volumes:
   pgdata:

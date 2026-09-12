@@ -1,3 +1,5 @@
+// Import tracing FIRST so OpenTelemetry can patch libraries before they load.
+import './observability/tracing.js';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe, VersioningType, VERSION_NEUTRAL } from '@nestjs/common';
 import helmet from 'helmet';
