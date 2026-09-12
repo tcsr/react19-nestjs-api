@@ -27,3 +27,5 @@ npm-debug.log*
 .windsurf/
 .claude/
 skills-lock.json
+
+*.stackdump
